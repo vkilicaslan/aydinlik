@@ -10,7 +10,6 @@ use \Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use \Drupal\Core\Entity\EntityInterface;
 use \Drupal\Core\Url;
 use \Drupal\Core\Session\AccountProxy;
-use \Drupal\Core\Messenger\Messenger;
 use \Drupal\user\Entity\User;
 use \Drupal\taxonomy\Entity\Term;
 use \Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,7 +22,7 @@ function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityView
     $current_user = User::load(\Drupal::currentUser()->id());
     $roles = $current_user->getRoles();
     $login = Url::fromRoute('user.login');
-    $messenger = new Messenger();
+    $messenger = \Drupal::messenger();
     if ($entity->bundle() == 'e_dergi' || $entity->bundle() == 'e_arsiv') {
         if ($current_user->isAnonymous()) {
             $messenger->addStatus($config->get('girisyapmesaji'));
