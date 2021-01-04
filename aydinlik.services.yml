@@ -1,0 +1,6 @@
+services:
+  aydinlik.event_subscriber:
+    class: Drupal\aydinlik\EventSubscriber\CartEventSubscriber
+    arguments: ['@messenger', '@commerce_cart.cart_manager']
+    tags:
+      - { name: event_subscriber }
