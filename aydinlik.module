@@ -3,67 +3,66 @@
 /**
  * @file
  * 
- * Contains the custom module
+ * Contains the custom module for Aydınlık newspaper.
  */
 
 use \Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use \Drupal\Core\Entity\EntityInterface;
 use \Drupal\Core\Url;
 use \Drupal\Core\Session\AccountProxy;
+use \Drupal\Core\Messenger\Messenger;
 use \Drupal\user\Entity\User;
 use \Drupal\taxonomy\Entity\Term;
 use \Symfony\Component\HttpFoundation\RedirectResponse;
 
-// use \Drupal\user\Entity\User;
-
- /**
-  * Implements hook_entity_view().
-  */
+/**
+ * Implements hook_entity_view().
+ */
 function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
-    $config = Drupal::config('aydinlik.settings');
-    $currentUser = User::load(\Drupal::currentUser()->id());
-    $roles = $currentUser->getRoles();
+    $config = \Drupal::config('aydinlik.settings');
+    $current_user = User::load(\Drupal::currentUser()->id());
+    $roles = $current_user->getRoles();
     $login = Url::fromRoute('user.login');
+    $messenger = new Messenger();
     if ($entity->bundle() == 'e_dergi' || $entity->bundle() == 'e_arsiv') {
-        if ($currentUser->isAnonymous()) {
-            \Drupal::messenger()->addStatus($config->get('girisyapmesaji'));
+        if ($current_user->isAnonymous()) {
+            $messenger->addStatus($config->get('girisyapmesaji'));
             $redirect = new RedirectResponse($login->toString());
             $redirect->send();
         } 
-        elseif ($currentUser->isAuthenticated()) {
-            $term = Term::load($currentUser->field_abonelik_turu->referencedEntities()[0]->tid->value); 
-            if (!str_contains($term->getName(), 'E-Gazete')) {
-                \Drupal::messenger()->addStatus($config->get('satinalmesaji'));
+        else {
+            $subscription_start_date = $current_user->field_abonelik_baslangic_tarihi->value;
+            $subscription_end_date = $current_user->field_abonelik_bitis_tarihi->value;
+            $publication_date = $entity->field_derginin_ciktigi_ay_yil->value;
+            $subscription_type = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value); 
+            if (!str_contains($subscription_type->getName(), 'E-Gazete')) {
+                $messenger->addStatus($config->get('satinalmesaji'));
                 $redirect = new RedirectResponse($login->toString());
                 $redirect->send();
-            } else {
-                $abonelikbaslangictarihi = $currentUser->field_abonelik_baslangic_tarihi->value;
-                $abonelikbitistarihi = $currentUser->field_abonelik_bitis_tarihi->value;
-                $dergiyayintarihi = $entity->field_derginin_ciktigi_ay_yil->value;
-                if (($abonelikbaslangictarihi<$dergiyayintarihi) && ($dergiyayintarihi>$abonelikbitistarihi)) {
-                    \Drupal::messenger()->addStatus($config->get('icerikaboneligiaraligimesaji'));
-                    $redirect = new RedirectResponse($login->toString());
-                    $redirect->send();
-                }
+            } 
+            if (($subscription_start_date<$publication_date) && ($publication_date>$subscription_end_date) || ($publication_date>$subscription_end_date)) {
+                $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
+                $redirect = new RedirectResponse($login->toString());
+                $redirect->send();
             }
         }
     }
     if ($entity->bundle() == 'e_arsiv') {
-        if ($currentUser->isAnonymous()) {
-            \Drupal::messenger()->addMessage($config->get('girisyapmesaji'),TRUE);
+        if ($current_user->isAnonymous()) {
+            $messenger->addMessage($config->get('girisyapmesaji'),TRUE);
             $redirect = new RedirectResponse($login->toString());
             return $redirect;
         } 
-        elseif ($currentUser->isAuthenticated()) {
-            $abonelik_turu = Term::load($currentUser->field_abonelik_turu->referencedEntities()[0]->tid->value);
-            $abonelik_suresi = Term::load($currentUser->field_abonelik_turu->referencedEntities()[0]->tid->value);
-            if (!str_contains($abonelik_turu->getName(), 'E-Arşiv')) {
-                \Drupal::messenger()->addStatus($config->get('satinalmesaji'));
+        elseif ($current_user->isAuthenticated()) {
+            $subscription_type = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
+            $subscription_duration = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
+            if (!str_contains($subscription_type->getName(), 'E-Arşiv')) {
+                $messenger->addStatus($config->get('satinalmesaji'));
                 $redirect = new RedirectResponse('/magaza');
                 $redirect->send();
             }
-            if (!str_contains($abonelik_suresi->getName(), 'Yıllık')) {
-                \Drupal::messenger()->addStatus($config->get('aboneliksuresimesaji'));
+            if (!str_contains($subscription_duration->getName(), 'Yıllık')) {
+                $messenger->addStatus($config->get('aboneliksuresimesaji'));
                 $redirect = new RedirectResponse($login->toString());
                 $redirect->send();
             }
