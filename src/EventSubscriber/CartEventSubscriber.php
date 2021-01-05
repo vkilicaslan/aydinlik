@@ -4,7 +4,7 @@ namespace Drupal\aydinlik\EventSubscriber;
 
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
-use Drupal\user\Entity\current_user;
+use Drupal\user\Entity\User;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\commerce_cart\CartManagerInterface;
 use Drupal\commerce_cart\Event\CartEntityAddEvent;
