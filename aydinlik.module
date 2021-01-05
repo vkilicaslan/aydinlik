@@ -39,7 +39,7 @@ function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityView
                 $redirect = new RedirectResponse($login->toString());
                 $redirect->send();
             } 
-            if (($subscription_start_date<$publication_date) && ($publication_date>$subscription_end_date) || ($publication_date>$subscription_end_date)) {
+            if (!($subscription_start_date<$publication_date) && ($subscription_end_date>$publication_date) || (!$subscription_end_date>$publication_date)) {
                 $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
                 $redirect = new RedirectResponse($login->toString());
                 $redirect->send();
