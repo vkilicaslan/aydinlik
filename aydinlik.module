@@ -44,6 +44,13 @@ function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityView
                 $redirect = new RedirectResponse($login->toString());
                 $redirect->send();
             }
+            if (str_contains($subscription_duration->getName(), 'Yıllık')) {
+                if ($publication_date>$subscription_end_date) {
+                    $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
+                    $redirect = new RedirectResponse($login->toString());
+                    $redirect->send();
+                }
+            }
         }
     }
     if ($entity->bundle() == 'e_arsiv') {
