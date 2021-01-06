@@ -79,6 +79,7 @@ class CartEventSubscriber implements EventSubscriberInterface {
             if (!empty($current_user->field_abonelik_turu)) {
               unset($current_user->field_abonelik_turu);
             }
+            $current_user->field_abonelik_baslangic_tarihi->value = $today;
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 month'));
             $current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $current_user->save();
@@ -87,6 +88,7 @@ class CartEventSubscriber implements EventSubscriberInterface {
             if (!empty($current_user->field_abonelik_turu)) {
               unset($current_user->field_abonelik_turu);
             }
+            $current_user->field_abonelik_baslangic_tarihi->value = $today;
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+3 months'));
             $current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $current_user->save();
@@ -95,6 +97,7 @@ class CartEventSubscriber implements EventSubscriberInterface {
             if (!empty($current_user->field_abonelik_turu)) {
               unset($current_user->field_abonelik_turu);
             }
+            $current_user->field_abonelik_baslangic_tarihi->value = $today;
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+6 months'));
             $current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $current_user->save();
@@ -103,6 +106,7 @@ class CartEventSubscriber implements EventSubscriberInterface {
             if (!empty($current_user->field_abonelik_turu)) {
               unset($current_user->field_abonelik_turu);
             }
+            $current_user->field_abonelik_baslangic_tarihi->value = $today;
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 year'));
             $earchive_subscription = $entityTypeManager->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Arşiv Aboneliği']);
             $current_user->field_abonelik_turu[] = ['target_id' => reset($earchive_subscription)->id()];
