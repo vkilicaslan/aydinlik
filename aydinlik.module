@@ -23,27 +23,23 @@ function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityView
     $roles = $current_user->getRoles();
     $login = Url::fromRoute('user.login');
     $messenger = \Drupal::messenger();
-    if ($entity->bundle() == 'e_dergi' || $entity->bundle() == 'e_arsiv') {
+    if ($entity->bundle() == 'e_dergi') {
         if ($current_user->isAnonymous()) {
             $messenger->addStatus($config->get('girisyapmesaji'));
             $redirect = new RedirectResponse($login->toString());
             $redirect->send();
         } 
         else {
+            $publication_date = $entity->field_derginin_ciktigi_ay_yil->value;
             $subscription_start_date = $current_user->field_abonelik_baslangic_tarihi->value;
             $subscription_end_date = $current_user->field_abonelik_bitis_tarihi->value;
-            $publication_date = $entity->field_derginin_ciktigi_ay_yil->value;
-            $subscription_type = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value); 
+            $subscription_duration = Term::load($current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
+            $subscription_type = Term::load($current_user->field_abonelik_turu->referencedEntities()[1]->tid->value); 
             if (!str_contains($subscription_type->getName(), 'E-Gazete')) {
                 $messenger->addStatus($config->get('satinalmesaji'));
                 $redirect = new RedirectResponse($login->toString());
                 $redirect->send();
             } 
-            if (!($subscription_start_date<$publication_date) && ($subscription_end_date>$publication_date) || (!$subscription_end_date>$publication_date)) {
-                $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
-                $redirect = new RedirectResponse($login->toString());
-                $redirect->send();
-            }
             if (str_contains($subscription_duration->getName(), 'Yıllık')) {
                 if ($publication_date>$subscription_end_date) {
                     $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
@@ -51,6 +47,13 @@ function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityView
                     $redirect->send();
                 }
             }
+            /*
+            if (!($subscription_start_date<$publication_date) && ($subscription_end_date>$publication_date) || (!$subscription_end_date>$publication_date)) {
+                $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
+                $redirect = new RedirectResponse($login->toString());
+                $redirect->send();
+            }
+            */
         }
     }
     if ($entity->bundle() == 'e_arsiv') {
@@ -61,15 +64,10 @@ function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityView
         } 
         elseif ($current_user->isAuthenticated()) {
             $subscription_type = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
-            $subscription_duration = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
+            $subscription_duration = Term::load($current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
             if (!str_contains($subscription_type->getName(), 'E-Arşiv')) {
                 $messenger->addStatus($config->get('satinalmesaji'));
                 $redirect = new RedirectResponse('/magaza');
-                $redirect->send();
-            }
-            if (!str_contains($subscription_duration->getName(), 'Yıllık')) {
-                $messenger->addStatus($config->get('aboneliksuresimesaji'));
-                $redirect = new RedirectResponse($login->toString());
                 $redirect->send();
             }
         }

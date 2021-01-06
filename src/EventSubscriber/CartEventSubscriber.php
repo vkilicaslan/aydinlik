@@ -64,48 +64,49 @@ class CartEventSubscriber implements EventSubscriberInterface {
     $dateTime = \DateTime::createFromFormat('Y-m-d',date('Y-m-d'));
     $today = $dateTime->format('Y-m-d');
     $current_user = User::load(\Drupal::currentUser()->id());
+    $entityTypeManager = \Drupal::entityTypeManager();
     /** @var \Drupal\commerce_product\Entity\ProductVariationInterface $product_variation */
-    unset($current_user->field_abonelik_suresi);
-    unset($current_user->field_abonelik_turu[1]);
     $product_variation = $event->getEntity();
     $sku = $product_variation->getSku();
     $from = ["aylik", "yillik", "-"];
     $to = ["Aylık", "Yıllık", " "];
     $name = ucwords(str_replace($from, $to, $sku));
-    $abonelik_suresi = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $name]);
-    $edergi_aboneligi = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Gazete Aboneliği']);
-    $current_user->field_abonelik_baslangic_tarihi->value = $today;
-    $current_user->field_abonelik_suresi[0] = ['target_id' => reset($abonelik_suresi)->id()];
-    $current_user->field_abonelik_turu[0]->target_id = reset($edergi_aboneligi)->id();
+    $epaper_subscription = $entityTypeManager->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Gazete Aboneliği']);
+    $subscription_duration = $entityTypeManager->getStorage('taxonomy_term')->loadByProperties(['name' => $name]);
+    $current_user->field_abonelik_suresi[0] = ['target_id' => reset($subscription_duration)->id()];
     switch ($sku) {
         case 'aylik-abonelik':
-            unset($current_user->field_abonelik_turu[1]);
+            if (!empty($current_user->field_abonelik_turu)) {
+              unset($current_user->field_abonelik_turu);
+            }
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 month'));
-            $egazete_aboneligi = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Gazete Aboneliği']);
-            $current_user->field_abonelik_turu[] = ['target_id' => reset($egazete_aboneligi)->id()];
+            $current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $current_user->save();
             break;
         case '3-aylik-abonelik':
-            unset($current_user->field_abonelik_turu[1]);
+            if (!empty($current_user->field_abonelik_turu)) {
+              unset($current_user->field_abonelik_turu);
+            }
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+3 months'));
-            $egazete_aboneligi = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Gazete Aboneliği']);
-            $current_user->field_abonelik_turu[] = ['target_id' => reset($egazete_aboneligi)->id()];
+            $current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $current_user->save();
             break;
         case '6-aylik-abonelik':
-            unset($current_user->field_abonelik_turu[1]);
+            if (!empty($current_user->field_abonelik_turu)) {
+              unset($current_user->field_abonelik_turu);
+            }
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+6 months'));
-            $egazete_aboneligi = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Gazete Aboneliği']);
-            $current_user->field_abonelik_turu[] = ['target_id' => reset($egazete_aboneligi)->id()];
+            $current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $current_user->save();
             break;
         case 'yillik-abonelik':
-            unset($current_user->field_abonelik_turu);
+            if (!empty($current_user->field_abonelik_turu)) {
+              unset($current_user->field_abonelik_turu);
+            }
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 year'));
-            $earsiv_aboneligi = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Arşiv Aboneliği']);
-            $egazete_aboneligi = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Gazete Aboneliği']);
-            $current_user->field_abonelik_turu[] = ['target_id' => reset($earsiv_aboneligi)->id()];
-            $current_user->field_abonelik_turu[] = ['target_id' => reset($egazete_aboneligi)->id()];
+            $earchive_subscription = $entityTypeManager->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Arşiv Aboneliği']);
+            $current_user->field_abonelik_turu[] = ['target_id' => reset($earchive_subscription)->id()];
+            $current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $current_user->save();
         default:
             # code...
