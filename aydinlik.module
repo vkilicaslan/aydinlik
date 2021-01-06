@@ -34,12 +34,14 @@ function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityView
             $subscription_start_date = $current_user->field_abonelik_baslangic_tarihi->value;
             $subscription_end_date = $current_user->field_abonelik_bitis_tarihi->value;
             $subscription_duration = Term::load($current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
-            $subscription_type = Term::load($current_user->field_abonelik_turu->referencedEntities()[1]->tid->value); 
-            if (!str_contains($subscription_type->getName(), 'E-Gazete')) {
-                $messenger->addStatus($config->get('satinalmesaji'));
-                $redirect = new RedirectResponse($login->toString());
-                $redirect->send();
-            } 
+            $subscription_types = $current_user->field_abonelik_turu->referencedEntities();
+            foreach($subscription_types as $subscription_type) {
+                if (!str_contains($subscription_type->getName(), 'E-Gazete')) {
+                    $messenger->addStatus($config->get('satinalmesaji'));
+                    $redirect = new RedirectResponse($login->toString());
+                    $redirect->send();
+                }
+            }
             if (str_contains($subscription_duration->getName(), 'Yıllık')) {
                 if ($publication_date>$subscription_end_date) {
                     $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
@@ -47,28 +49,29 @@ function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityView
                     $redirect->send();
                 }
             }
-            /*
-            if (!($subscription_start_date<$publication_date) && ($subscription_end_date>$publication_date) || (!$subscription_end_date>$publication_date)) {
-                $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
-                $redirect = new RedirectResponse($login->toString());
-                $redirect->send();
+            if (!str_contains($subscription_duration->getName(), 'Yıllık')) {
+                if (!($subscription_start_date<$publication_date && $publication_date<$subscription_end_date) || !($subscription_end_date>$publication_date)) {
+                    $messenger->addStatus($config->get('icerikaboneligiaraligimesaji'));
+                    $redirect = new RedirectResponse($login->toString());
+                    $redirect->send();
+                }
             }
-            */
         }
     }
     if ($entity->bundle() == 'e_arsiv') {
         if ($current_user->isAnonymous()) {
             $messenger->addMessage($config->get('girisyapmesaji'),TRUE);
             $redirect = new RedirectResponse($login->toString());
-            return $redirect;
+            $redirect->send();
         } 
         elseif ($current_user->isAuthenticated()) {
-            $subscription_type = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
-            $subscription_duration = Term::load($current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
-            if (!str_contains($subscription_type->getName(), 'E-Arşiv')) {
-                $messenger->addStatus($config->get('satinalmesaji'));
-                $redirect = new RedirectResponse('/magaza');
-                $redirect->send();
+            $subscription_types = $current_user->field_abonelik_turu->referencedEntities();
+            foreach($subscription_types as $subscription_type) {
+                if (!str_contains($subscription_type->getName(), 'E-Arşiv')) {
+                    $messenger->addStatus($config->get('satinalmesaji'));
+                    $redirect = new RedirectResponse('/satin-al');
+                    $redirect->send();
+                }
             }
         }
     }
