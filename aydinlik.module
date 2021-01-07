@@ -18,7 +18,6 @@ use \Symfony\Component\HttpFoundation\RedirectResponse;
  * Implements hook_entity_view().
  */
 function aydinlik_entity_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
-    \Drupal::service('kernel')->invalidateContainer();
     $config = \Drupal::config('aydinlik.settings');
     $current_user = User::load(\Drupal::currentUser()->id());
     $roles = $current_user->getRoles();

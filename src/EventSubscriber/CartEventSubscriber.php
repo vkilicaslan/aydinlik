@@ -61,7 +61,6 @@ class CartEventSubscriber implements EventSubscriberInterface {
    * @throws \Drupal\Core\TypedData\Exception\ReadOnlyException
    */
   public function addToCart(CartEntityAddEvent $event) { //bind to checkout
-    \Drupal::service('kernel')->invalidateContainer();
     $dateTime = \DateTime::createFromFormat('Y-m-d',date('Y-m-d'));
     $today = $dateTime->format('Y-m-d');
     $current_user = User::load(\Drupal::currentUser()->id());
