@@ -4,3 +4,8 @@ services:
     arguments: ['@messenger', '@commerce_cart.cart_manager']
     tags:
       - { name: event_subscriber }
+  aydinlik.node_access_subscriber:
+    class: Drupal\aydinlik\EventSubscriber\NodeAccessSubscriber
+    arguments: ['@current_user']
+    tags:
+      - { name: event_subscriber }
