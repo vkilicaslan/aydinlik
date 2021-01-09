@@ -73,7 +73,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                 $subscription_end_date = $current_user->field_abonelik_bitis_tarihi->value;
                 $subscription_duration = Term::load($current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
                 $epaper_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
-                if (str_contains($epaper_subscription->getName(), 'E-Gazete')) {
+                if (!str_contains($epaper_subscription->getName(), 'E-Gazete')) {
                     $messenger->addStatus($config->get('satinalmesaji'));
                     $redirect = new RedirectResponse($login->toString());
                     $redirect->send();
