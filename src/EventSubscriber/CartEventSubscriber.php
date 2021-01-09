@@ -109,8 +109,8 @@ class CartEventSubscriber implements EventSubscriberInterface {
             $current_user->field_abonelik_baslangic_tarihi->value = $today;
             $current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 year'));
             $earchive_subscription = $entityTypeManager->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Arşiv Aboneliği']);
-            $current_user->field_abonelik_turu[] = ['target_id' => reset($earchive_subscription)->id()];
             $current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
+            $current_user->field_abonelik_turu[] = ['target_id' => reset($earchive_subscription)->id()];
             $current_user->save();
         default:
             # code...
