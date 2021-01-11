@@ -98,7 +98,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
             if ($current_user->isAnonymous()) {
                 $messenger->addMessage($config->get('girisyapmesaji'),TRUE);
                 $redirect = new RedirectResponse($login->toString());
-                $redirect->send();
+                $event->setResponse($redirect);
             } 
             elseif ($current_user->isAuthenticated()) {
                     $earchives_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[1]->tid->value);
