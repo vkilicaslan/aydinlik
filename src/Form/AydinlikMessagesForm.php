@@ -30,32 +30,33 @@ class AydinlikMessagesForm extends ConfigFormBase {
     public function buildForm(array $form, FormStateInterface $form_state) {
         $config = $this->config('aydinlik.settings');
         $form['girisyapmesaji'] = [
-            '#type' => 'textarea',
+            '#type' => 'text_format',
             '#title' => 'Misafir kullanıcılara gösterilecek mesaj',
             '#default_value' => $config->get('girisyapmesaji'),
+            '#format' => 'full_html',
         ];
         $form['satinalmesaji'] = [
-            '#type' => 'textarea',
+            '#type' => 'text_format',
             '#title' => 'Kayıtlı kullanıcı olup da e-gazete aboneliği olmayanlara gösterilecek satın alın mesajı',
             '#default_value' => $config->get('satinalmesaji'),
         ];
         $form['icerikaboneligiaraligimesaji'] = [
-            '#type' => 'textarea',
+            '#type' => 'text_format',
             '#title' => 'İçerik aboneliği e-gazetenin çıkış tarihi aralığında olmayanlara gösterilecek mesaj',
             '#default_value' => $config->get('icerikaboneligiaraligimesaji'),
         ];
         $form['earsivabonesidegilmesaji'] = [
-            '#type' => 'textarea',
+            '#type' => 'text_format',
             '#title' => 'E-arşiv aboneliği olmayanlara gösterilecek mesaj',
             '#default_value' => $config->get('earsivabonesidegilmesaji'),
         ];
         $form['egazeteaboneliksuresibittimesaji'] = [
-            '#type' => 'textarea',
+            '#type' => 'text_format',
             '#title' => 'E-gazete abonelik süresi bitenlere gösterilecek mesaj',
             '#default_value' => $config->get('egazeteaboneliksuresibittimesaji'),
         ];
         $form['egazeteaboneliksuresibitecekmesaji'] = [
-            '#type' => 'textarea',
+            '#type' => 'text_format',
             '#title' => 'E-gazete abonelik süresi bitmek üzere olanlara gösterilecek mesaj',
             '#default_value' => $config->get('egazeteaboneliksuresibitecekmesaji'),
         ];
