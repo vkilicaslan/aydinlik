@@ -68,6 +68,7 @@ class CartEventSubscriber implements EventSubscriberInterface {
     /** @var \Drupal\commerce_product\Entity\ProductVariationInterface $product_variation */
     $product_variation = $event->getEntity();
     $sku = $product_variation->getSku();
+    $test = '';
     $from = ["aylik", "yillik", "-"];
     $to = ["Aylık", "Yıllık", " "];
     $name = ucwords(str_replace($from, $to, $sku));
