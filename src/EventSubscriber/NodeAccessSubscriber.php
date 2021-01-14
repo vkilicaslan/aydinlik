@@ -101,7 +101,9 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                     }
                 }
                 else {
-                    $messenger->addWarning()
+                    $messenger->addWarning($config->get('girisyapmesaji'));
+                    $redirect = new RedirectResponse($login->toString());
+                    $redirect->send();
                 }
                 if ($node->bundle() == 'e_arsiv') {
                         $earchives_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
