@@ -80,30 +80,33 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                         $subscription_duration = Term::load($current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
                         $epaper_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
                         if (!str_contains($epaper_subscription->getName(), 'E-Gazete')) {
-                            $messenger->addStatus(Markup::create($config->get('satinalmesaji.value')));
+                            $messenger->addWarning(Markup::create($config->get('satinalmesaji.value')));
                             $redirect = new RedirectResponse($login->toString());
                             $redirect->send();
                         }
                         if (str_contains($subscription_duration->getName(), 'Yıllık')) {
                             if ($publication_date>$subscription_end_date) {
-                            $messenger->addStatus(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
+                            $messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
                             $redirect = new RedirectResponse($login->toString());
                             $redirect->send();
                             }
                         }
                         if (!str_contains($subscription_duration->getName(), 'Yıllık')) {
                             if (!($subscription_start_date<$publication_date && $publication_date<$subscription_end_date) || !($subscription_end_date>$publication_date)) {
-                                $messenger->addStatus(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
+                                $messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
                                 $redirect = new RedirectResponse($login->toString());
                                 $redirect->send();
                             }
                         }
                     }
                 }
+                else {
+                    $messenger->addWarning()
+                }
                 if ($node->bundle() == 'e_arsiv') {
                         $earchives_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
                         if (!str_contains($earchives_subscription->getName(), 'E-Arşiv')) {
-                            $messenger->addStatus(Markup::create($config->get('earsivabonesidegilmesaji.value')));
+                            $messenger->addWarning(Markup::create($config->get('earsivabonesidegilmesaji.value')));
                             $redirect = new RedirectResponse('/satin-al');
                             $redirect->send();
                         }
