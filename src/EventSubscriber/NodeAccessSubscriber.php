@@ -101,7 +101,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                     }
                 }
                 else {
-                    $messenger->addWarning($config->get('girisyapmesaji'));
+                    $messenger->addWarning($config->get('abonelikaktifdegilmesaji'));
                     $redirect = new RedirectResponse($login->toString());
                     $redirect->send();
                 }
