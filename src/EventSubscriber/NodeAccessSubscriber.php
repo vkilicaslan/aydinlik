@@ -101,7 +101,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                     }
                 }
                 if ($node->bundle() == 'e_arsiv') {
-                        $earchives_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[1]->tid->value);
+                        $earchives_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
                         if (!str_contains($earchives_subscription->getName(), 'E-Arşiv')) {
                             $messenger->addStatus(Markup::create($config->get('satinalmesaji.value')));
                             $redirect = new RedirectResponse('/satin-al');
