@@ -54,6 +54,7 @@ class AydinlikMessagesForm extends ConfigFormBase {
             '#type' => 'text_format',
             '#title' => 'Aboneliği aktif olmayanlara gösterilecek mesaj',
             '#default_value' => $config->get('abonelikaktifdegilmesaji.value'),
+            '#format' => 'full_html',
         ];
         $form['egazeteaboneliksuresibittimesaji'] = [
             '#type' => 'text_format',
