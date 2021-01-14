@@ -39,16 +39,19 @@ class AydinlikMessagesForm extends ConfigFormBase {
             '#type' => 'text_format',
             '#title' => 'Kayıtlı kullanıcı olup da e-gazete aboneliği olmayanlara gösterilecek satın alın mesajı',
             '#default_value' => $config->get('satinalmesaji.value'),
+            '#format' => 'full_html',
         ];
         $form['icerikaboneligiaraligimesaji'] = [
             '#type' => 'text_format',
             '#title' => 'İçerik aboneliği e-gazetenin çıkış tarihi aralığında olmayanlara gösterilecek mesaj',
             '#default_value' => $config->get('icerikaboneligiaraligimesaji.value'),
+            '#format' => 'full_html',
         ];
         $form['earsivabonesidegilmesaji'] = [
             '#type' => 'text_format',
             '#title' => 'E-arşiv aboneliği olmayanlara gösterilecek mesaj',
             '#default_value' => $config->get('earsivabonesidegilmesaji.value'),
+            '#format' => 'full_html',
         ];
         $form['abonelikaktifdegilmesaji'] = [
             '#type' => 'text_format',
@@ -60,11 +63,13 @@ class AydinlikMessagesForm extends ConfigFormBase {
             '#type' => 'text_format',
             '#title' => 'E-gazete abonelik süresi bitenlere gösterilecek mesaj',
             '#default_value' => $config->get('egazeteaboneliksuresibittimesaji.value'),
+            '#format' => 'full_html',
         ];
         $form['egazeteaboneliksuresibitecekmesaji'] = [
             '#type' => 'text_format',
             '#title' => 'E-gazete abonelik süresi bitmek üzere olanlara gösterilecek mesaj',
             '#default_value' => $config->get('egazeteaboneliksuresibitecekmesaji.value'),
+            '#format' => 'full_html',
         ];
         $form['kaydet'] = [
             '#type' => 'submit',
