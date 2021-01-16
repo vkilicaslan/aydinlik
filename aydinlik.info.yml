@@ -1,4 +1,4 @@
 name: Aydınlık
-description: Custom module for Aydınlık newspaper
+description: Custom module for Aydınlık to control subscribers access permissions
 type: module
 core_version_requirement: ^8 || ^9
