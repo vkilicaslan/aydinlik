@@ -48,6 +48,12 @@ class OrderPaidSubscriber implements EventSubscriberInterface {
       $this->current_user->addRole('abone');
       $this->current_user->save();
     }
+    else {
+      if ($this->current_user-hasRole('abone')) {
+        $this->current_user->removeRole('abone');
+        $this->current_user->save();
+      }
+    }
   }
 
 }

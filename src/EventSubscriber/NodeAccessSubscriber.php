@@ -90,8 +90,8 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                             }                       
                         if (str_contains($subscription_duration->getName(), 'Yıllık')) {
                             if ($publication_date>$subscription_end_date) {
-                            $this->messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
-                            $redirect = new RedirectResponse($login->toString());
+                                $this->messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
+                                $redirect = new RedirectResponse($login->toString());
                             $redirect->send();
                             }
                         }
@@ -109,12 +109,16 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                     $redirect = new RedirectResponse($login->toString());
                     $redirect->send();
                 }
-                if ($node->bundle() == 'e_arsiv') {
-                        $earchives_subscription = Term::load($this->current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
-                        if (!str_contains($earchives_subscription->getName(), 'E-Arşiv')) {
-                            $this->messenger->addWarning(Markup::create($config->get('earsivabonesidegilmesaji.value')));
-                            $redirect = new RedirectResponse('/satin-al');
-                            $redirect->send();
+                    if ($node->bundle() == 'e_arsiv') {
+                        $subscription_type = $this->current_user->get('field_abonelik_turu');
+                        $subscription_type_count = $subscription_type->count();
+                        if ($subscription_type_count < 2){
+                            $earchives_subscription = Term::load($this->current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
+                            if (!str_contains($earchives_subscription->getName(), 'E-Arşiv')) {
+                                $this->messenger->addWarning(Markup::create($config->get('earsivabonesidegilmesaji.value')));
+                                $redirect = new RedirectResponse('/satin-al');
+                                $redirect->send();
+                            }
                         }
                     }
                 }

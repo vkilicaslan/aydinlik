@@ -45,11 +45,12 @@ class OrderPaySubscriber implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = ['commerce_order.place.post_transition' => ['addSubscription', -100]];
+    $events = ['commerce_order.place.pre_transition' => ['removeSubscription', -100]];
     return $events;
   }
 
   /**
-   * Completes the order.
+   * Adds subscription upon successful payment.
    *
    * @param \Drupal\state_machine\Event\WorkflowTransitionEvent $event
    *   The event we subscribed to.
@@ -111,6 +112,20 @@ class OrderPaySubscriber implements EventSubscriberInterface {
         default:
             # code...
             break;
+    }
+  }
+
+  /*
+   * Removes subscription upon pending payment.
+   *
+   * @param \Drupal\state_machine\Event\WorkflowTransitionEvent $event
+   *   The event we subscribed to.
+   */
+  public function removeSubscription(WorkflowTransitionEvent $event) {
+    $this->current_user = User::load(\Drupal::currentUser()->id());
+    if ($this->current_user->hasRole('abone')) {
+      $this->current_user->removeRole('abone');
+      $this->current_user->save();
     }
   }
 
