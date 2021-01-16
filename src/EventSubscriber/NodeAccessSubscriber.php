@@ -4,13 +4,13 @@ namespace Drupal\aydinlik\EventSubscriber;
 
 use Drupal\Core\Routing\RouteMatch;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
-use Drupal\user\Entity\User;
 use Drupal\node\NodeInterface;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\user\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -29,7 +29,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
    *
    * @var \Drupal\Core\Session\AccountInterface
    */
-  protected $currentUser;
+  protected $current_user;
 
   /**
    * NodeAccessSubscriber constructor.
@@ -38,7 +38,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
    *   Current user account.
    */
   public function __construct(AccountInterface $current_user) {
-    $this->currentUser = $current_user;
+    $this->current_user = $current_user;
   }
 
   /**
@@ -58,42 +58,46 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
    *   When user does not have access to the restricted nodes.
    */
   public function denyAccessForRestrictedNodes(GetResponseEvent $event) {
-    $current_user = User::load(\Drupal::currentUser()->id());
+    $this->current_user = User::load(\Drupal::currentUser()->id());
     $config = \Drupal::config('aydinlik.settings');
-    $roles = $current_user->getRoles();
+    $roles = $this->current_user->getRoles();
     $login = Url::fromRoute('user.login');
-    $messenger = \Drupal::messenger();
+    $this->messenger = \Drupal::messenger();
     $route_match = RouteMatch::createFromRequest($event->getRequest());
     if (($node = $route_match->getParameter('node')) && $node instanceof NodeInterface) {
         if (!\Drupal::service('path.matcher')->isFrontPage()) { 
-            if ($current_user->isAnonymous()) {
-                $messenger->addMessage(Markup::create($config->get('girisyapmesaji.value')));
+            if ($this->current_user->isAnonymous()) {
+                $this->messenger->addMessage(Markup::create($config->get('girisyapmesaji.value')));
                 $redirect = new RedirectResponse($login->toString());
                 $event->setResponse($redirect);
             } 
-            elseif (!$current_user->hasPermission('bypass permission checks')) {
-                if ($current_user->hasRole('abone')) {
+            elseif (!$this->current_user->hasPermission('bypass permission checks')) {
+                if ($this->current_user->hasRole('abone')) {
                     if ($node->bundle() == 'e_dergi') {
                         $publication_date = $node->field_derginin_ciktigi_ay_yil->value;
-                        $subscription_start_date = $current_user->field_abonelik_baslangic_tarihi->value;
-                        $subscription_end_date = $current_user->field_abonelik_bitis_tarihi->value;
-                        $subscription_duration = Term::load($current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
-                        $epaper_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
-                        if (!str_contains($epaper_subscription->getName(), 'E-Gazete')) {
-                            $messenger->addWarning(Markup::create($config->get('satinalmesaji.value')));
-                            $redirect = new RedirectResponse($login->toString());
-                            $redirect->send();
-                        }
+                        $subscription_start_date = $this->current_user->field_abonelik_baslangic_tarihi->value;
+                        $subscription_end_date = $this->current_user->field_abonelik_bitis_tarihi->value;
+                        $subscription_duration = Term::load($this->current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
+                        $subscription_type = $this->current_user->get('field_abonelik_turu');
+                        $subscription_type_count = $subscription_type->count();
+                        if ($subscription_type_count < 2){
+                            $epaper_subscription = Term::load($this->current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
+                                if (!str_contains($epaper_subscription->getName(), 'E-Gazete')) {
+                                    $this->messenger->addWarning(Markup::create($config->get('satinalmesaji.value')));
+                                    $redirect = new RedirectResponse($login->toString());
+                                    $redirect->send();
+                                }
+                            }                       
                         if (str_contains($subscription_duration->getName(), 'Yıllık')) {
                             if ($publication_date>$subscription_end_date) {
-                            $messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
+                            $this->messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
                             $redirect = new RedirectResponse($login->toString());
                             $redirect->send();
                             }
                         }
                         if (!str_contains($subscription_duration->getName(), 'Yıllık')) {
                             if (!($subscription_start_date<$publication_date && $publication_date<$subscription_end_date) || !($subscription_end_date>$publication_date)) {
-                                $messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
+                                $this->messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
                                 $redirect = new RedirectResponse($login->toString());
                                 $redirect->send();
                             }
@@ -101,14 +105,14 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                     }
                 }
                 else {
-                    $messenger->addWarning(Markup::create($config->get('abonelikaktifdegilmesaji.value')));
+                    $this->messenger->addWarning(Markup::create($config->get('abonelikaktifdegilmesaji.value')));
                     $redirect = new RedirectResponse($login->toString());
                     $redirect->send();
                 }
                 if ($node->bundle() == 'e_arsiv') {
-                        $earchives_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
+                        $earchives_subscription = Term::load($this->current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
                         if (!str_contains($earchives_subscription->getName(), 'E-Arşiv')) {
-                            $messenger->addWarning(Markup::create($config->get('earsivabonesidegilmesaji.value')));
+                            $this->messenger->addWarning(Markup::create($config->get('earsivabonesidegilmesaji.value')));
                             $redirect = new RedirectResponse('/satin-al');
                             $redirect->send();
                         }
