@@ -78,12 +78,25 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                         $subscription_start_date = $current_user->field_abonelik_baslangic_tarihi->value;
                         $subscription_end_date = $current_user->field_abonelik_bitis_tarihi->value;
                         $subscription_duration = Term::load($current_user->field_abonelik_suresi->referencedEntities()[0]->tid->value);
-                        $epaper_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
+                        /*$epaper_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
                         if (!str_contains($epaper_subscription->getName(), 'E-Gazete')) {
                             $messenger->addWarning(Markup::create($config->get('satinalmesaji.value')));
                             $redirect = new RedirectResponse($login->toString());
                             $redirect->send();
                         }
+                        */
+                        //Kullanıcının abonelik türünde kaç adet terim işaretlendiğini belirleyip, bu bilgiye göre karşılaştırma yapıyoruz.
+                        $abonelik_turu= $current_user->get('field_abonelik_turu');
+                        $abonelik_turu_sayisi = $abonelik_turu->count();
+                        if($abonelik_turu_sayisi<2){
+                        $epaper_subscription = Term::load($current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
+                            if (!str_contains($epaper_subscription->getName(), 'E-Gazete')) {
+                                $messenger->addWarning(Markup::create($config->get('satinalmesaji.value')));
+                                $redirect = new RedirectResponse($login->toString());
+                                $redirect->send();
+                            }
+                        }
+                        // Düzenlemenin sonu
                         if (str_contains($subscription_duration->getName(), 'Yıllık')) {
                             if ($publication_date>$subscription_end_date) {
                             $messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji.value')));
