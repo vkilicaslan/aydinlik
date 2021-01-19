@@ -5,7 +5,6 @@ namespace Drupal\aydinlik\EventSubscriber;
 use Drupal\Core\Routing\RouteMatch;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Messenger\MessengerTrait;
-use Drupal\Core\Render\Markup;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
@@ -67,7 +66,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
     if (($node = $route_match->getParameter('node')) && $node instanceof NodeInterface) {
         if (!\Drupal::service('path.matcher')->isFrontPage()) { 
             if ($this->current_user->isAnonymous()) {
-                $this->messenger->addMessage(Markup::create($config->get('girisyapmesaji.value')));
+                $this->messenger->addMessage($config->get('girisyapmesaji'));
                 $redirect = new RedirectResponse($login->toString());
                 $event->setResponse($redirect);
             } 
@@ -83,21 +82,21 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                         if ($subscription_type_count < 2){
                             $epaper_subscription = Term::load($this->current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
                                 if (!str_contains($epaper_subscription->getName(), 'E-Gazete')) {
-                                    $this->messenger->addWarning(Markup::create($config->get('satinalmesaji')));
+                                    $this->messenger->addWarning($config->get('satinalmesaji'));
                                     $redirect = new RedirectResponse($login->toString());
                                     $redirect->send();
                                 }
                             }                       
                         if (str_contains($subscription_duration->getName(), 'Yıllık')) {
                             if ($publication_date>$subscription_end_date) {
-                                $this->messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji')));
+                                $this->messenger->addWarning($config->get('icerikaboneligiaraligimesaji'));
                                 $redirect = new RedirectResponse($login->toString());
                             $redirect->send();
                             }
                         }
                         if (!str_contains($subscription_duration->getName(), 'Yıllık')) {
                             if (!($subscription_start_date<$publication_date && $publication_date<$subscription_end_date) || !($subscription_end_date>$publication_date)) {
-                                $this->messenger->addWarning(Markup::create($config->get('icerikaboneligiaraligimesaji')));
+                                $this->messenger->addWarning($config->get('icerikaboneligiaraligimesaji'));
                                 $redirect = new RedirectResponse($login->toString());
                                 $redirect->send();
                             }
@@ -105,7 +104,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                     }
                 }
                 else {
-                    $this->messenger->addWarning(Markup::create($config->get('abonelikaktifdegilmesaji')));
+                    $this->messenger->addWarning($config->get('abonelikaktifdegilmesaji'));
                     $redirect = new RedirectResponse($login->toString());
                     $redirect->send();
                 }
@@ -115,7 +114,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
                         if ($subscription_type_count < 2){
                             $earchives_subscription = Term::load($this->current_user->field_abonelik_turu->referencedEntities()[0]->tid->value);
                             if (!str_contains($earchives_subscription->getName(), 'E-Arşiv')) {
-                                $this->messenger->addWarning(Markup::create($config->get('earsivabonesidegilmesaji')));
+                                $this->messenger->addWarning($config->get('earsivabonesidegilmesaji'));
                                 $redirect = new RedirectResponse('/satin-al');
                                 $redirect->send();
                             }

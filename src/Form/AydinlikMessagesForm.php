@@ -30,43 +30,43 @@ class AydinlikMessagesForm extends ConfigFormBase {
     public function buildForm(array $form, FormStateInterface $form_state) {
         $config = $this->config('aydinlik.settings');
         $form['abonelikaktifdegilmesaji'] = [
-            '#type' => 'text_format',
+            '#type' => 'textarea',
             '#title' => 'Aboneliği aktif olmayanlara gösterilecek mesaj',
             '#default_value' => $config->get('abonelikaktifdegilmesaji.value'),
             '#format' => 'full_html',
         ];
         $form['earsivabonesidegilmesaji'] = [
-            '#type' => 'text_format',
+            '#type' => 'textarea',
             '#title' => 'E-arşiv aboneliği olmayanlara gösterilecek mesaj',
             '#default_value' => $config->get('earsivabonesidegilmesaji.value'),
             '#format' => 'full_html',
         ];
         $form['egazeteaboneliksuresibitecekmesaji'] = [
-            '#type' => 'text_format',
+            '#type' => 'textarea',
             '#title' => 'E-gazete abonelik süresi bitmek üzere olanlara gösterilecek mesaj',
             '#default_value' => $config->get('egazeteaboneliksuresibitecekmesaji.value'),
             '#format' => 'full_html',
         ];
         $form['egazeteaboneliksuresibittimesaji'] = [
-            '#type' => 'text_format',
+            '#type' => 'textarea',
             '#title' => 'E-gazete abonelik süresi bitenlere gösterilecek mesaj',
             '#default_value' => $config->get('egazeteaboneliksuresibittimesaji.value'),
             '#format' => 'full_html',
         ];
         $form['girisyapmesaji'] = [
-            '#type' => 'text_format',
+            '#type' => 'textarea',
             '#title' => 'Misafir kullanıcılara gösterilecek mesaj',
             '#default_value' => $config->get('girisyapmesaji.value'),
             '#format' => 'full_html',
         ];
         $form['icerikaboneligiaraligimesaji'] = [
-            '#type' => 'text_format',
+            '#type' => 'textarea',
             '#title' => 'İçerik aboneliği e-gazetenin çıkış tarihi aralığında olmayanlara gösterilecek mesaj',
             '#default_value' => $config->get('icerikaboneligiaraligimesaji.value'),
             '#format' => 'full_html',
         ];
         $form['satinalmesaji'] = [
-            '#type' => 'text_format',
+            '#type' => 'textarea',
             '#title' => 'Kayıtlı kullanıcı olup da e-gazete aboneliği olmayanlara gösterilecek satın alın mesajı',
             '#default_value' => $config->get('satinalmesaji.value'),
             '#format' => 'full_html',
