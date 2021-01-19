@@ -89,13 +89,13 @@ class AydinlikMessagesForm extends ConfigFormBase {
      */
     public function submitForm(array &$form, FormStateInterface $form_state) {
         $config = $this->configFactory()->getEditable('aydinlik.settings');
-        $config->set('abonelikaktifdegilmesaji', $form_state->getValue('abonelikaktifdegilmesaji'));
-        $config->set('earsivabonesidegilmesaji', $form_state->getValue('earsivabonesidegilmesaji'));
-        $config->set('egazeteaboneliksuresibitecekmesaji', $form_state->getValue('egazeteaboneliksuresibitecekmesaji'));
-        $config->set('egazeteaboneliksuresibittimesaji', $form_state->getValue('egazeteaboneliksuresibittimesaji'));
-        $config->set('girisyapmesaji', $form_state->getValue('girisyapmesaji'));
-        $config->set('icerikaboneligiaraligimesaji', $form_state->getValue('icerikaboneligiaraligimesaji'));
-        $config->set('satinalmesaji', $form_state->getValue('satinalmesaji'));
+        $config->set('abonelikaktifdegilmesaji', $form_state->getValue('abonelikaktifdegilmesaji')->value);
+        $config->set('earsivabonesidegilmesaji', $form_state->getValue('earsivabonesidegilmesaji')->value);
+        $config->set('egazeteaboneliksuresibitecekmesaji', $form_state->getValue('egazeteaboneliksuresibitecekmesaji')->value);
+        $config->set('egazeteaboneliksuresibittimesaji', $form_state->getValue('egazeteaboneliksuresibittimesaji')->value);
+        $config->set('girisyapmesaji', $form_state->getValue('girisyapmesaji')->value);
+        $config->set('icerikaboneligiaraligimesaji', $form_state->getValue('icerikaboneligiaraligimesaji')->value);
+        $config->set('satinalmesaji', $form_state->getValue('satinalmesaji')->value);
         $config->save();
         $test = '';
         return parent::submitForm($form, $form_state);
