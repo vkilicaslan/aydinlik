@@ -5,7 +5,6 @@ namespace Drupal\aydinlik\EventSubscriber;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\Entity\User;
-//use Drupal\commerce_order\Entity\Order;
 use Drupal\commerce_product\Entity\ProductVariation;
 use Drupal\state_machine\Event\WorkflowTransitionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -44,8 +43,10 @@ class OrderPaySubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events = ['commerce_order.place.post_transition' => ['addSubscription', -100]];
-    $events = ['commerce_order.place.pre_transition' => ['removeSubscription', -100]];
+    $events = [
+      'commerce_order.place.post_transition' => ['addSubscription', -100],
+      'commerce_order.place.pre_transition' => ['removeSubscription', -100]
+    ];
     return $events;
   }
 
