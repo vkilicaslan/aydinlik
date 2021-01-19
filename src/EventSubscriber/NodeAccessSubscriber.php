@@ -67,7 +67,7 @@ class NodeAccessSubscriber implements EventSubscriberInterface {
     if (($node = $route_match->getParameter('node')) && $node instanceof NodeInterface) {
         if (!\Drupal::service('path.matcher')->isFrontPage()) { 
             if ($this->current_user->isAnonymous()) {
-                $this->messenger->addMessage(Markup::create($config->get('girisyapmesaji')));
+                $this->messenger->addMessage(Markup::create($config->get('girisyapmesaji.value')));
                 $redirect = new RedirectResponse($login->toString());
                 $event->setResponse($redirect);
             } 
