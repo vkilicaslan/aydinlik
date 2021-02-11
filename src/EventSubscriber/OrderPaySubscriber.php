@@ -77,7 +77,9 @@ class OrderPaySubscriber implements EventSubscriberInterface {
             if (!empty($this->current_user->field_abonelik_turu)) {
               unset($this->current_user->field_abonelik_turu);
             }
-            $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
+            if(current_user->field_abonelik_baslangic_tarihi->value == null){
+              $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
+            }
             $this->current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 month'));
             $this->current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $this->current_user->save();
@@ -86,7 +88,9 @@ class OrderPaySubscriber implements EventSubscriberInterface {
             if (!empty($this->current_user->field_abonelik_turu)) {
               unset($this->current_user->field_abonelik_turu);
             }
-            $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
+            if(current_user->field_abonelik_baslangic_tarihi->value == null){
+              $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
+            }
             $this->current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+3 months'));
             $this->current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $this->current_user->save();
@@ -95,7 +99,9 @@ class OrderPaySubscriber implements EventSubscriberInterface {
             if (!empty($this->current_user->field_abonelik_turu)) {
               unset($this->current_user->field_abonelik_turu);
             }
-            $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
+            $if(current_user->field_abonelik_baslangic_tarihi->value == null){
+              $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
+            }
             $this->current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+6 months'));
             $this->current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
             $this->current_user->save();
@@ -104,7 +110,9 @@ class OrderPaySubscriber implements EventSubscriberInterface {
             if (!empty($this->current_user->field_abonelik_turu)) {
               unset($this->current_user->field_abonelik_turu);
             }
-            $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
+            if(current_user->field_abonelik_baslangic_tarihi->value == null){
+              $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
+            }
             $this->current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 year'));
             $earchive_subscription = $this->entity_type_manager->getStorage('taxonomy_term')->loadByProperties(['name' => 'E-Arşiv Aboneliği']);
             $this->current_user->field_abonelik_turu[] = ['target_id' => reset($epaper_subscription)->id()];
