@@ -77,7 +77,7 @@ class OrderPaySubscriber implements EventSubscriberInterface {
             if (!empty($this->current_user->field_abonelik_turu)) {
               unset($this->current_user->field_abonelik_turu);
             }
-            if(current_user->field_abonelik_baslangic_tarihi->value == null){
+            if ($this->current_user->field_abonelik_baslangic_tarihi->value == null) {
               $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
             }
             $this->current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 month'));
@@ -88,7 +88,7 @@ class OrderPaySubscriber implements EventSubscriberInterface {
             if (!empty($this->current_user->field_abonelik_turu)) {
               unset($this->current_user->field_abonelik_turu);
             }
-            if(current_user->field_abonelik_baslangic_tarihi->value == null){
+            if ($this->current_user->field_abonelik_baslangic_tarihi->value == null) {
               $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
             }
             $this->current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+3 months'));
@@ -99,7 +99,7 @@ class OrderPaySubscriber implements EventSubscriberInterface {
             if (!empty($this->current_user->field_abonelik_turu)) {
               unset($this->current_user->field_abonelik_turu);
             }
-            $if(current_user->field_abonelik_baslangic_tarihi->value == null){
+            if ($this->current_user->field_abonelik_baslangic_tarihi->value == null) {
               $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
             }
             $this->current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+6 months'));
@@ -110,7 +110,7 @@ class OrderPaySubscriber implements EventSubscriberInterface {
             if (!empty($this->current_user->field_abonelik_turu)) {
               unset($this->current_user->field_abonelik_turu);
             }
-            if(current_user->field_abonelik_baslangic_tarihi->value == null){
+            if ($this->current_user->field_abonelik_baslangic_tarihi->value == null) {
               $this->current_user->field_abonelik_baslangic_tarihi->value = $today;
             }
             $this->current_user->field_abonelik_bitis_tarihi->value = date('Y-m-d', strtotime('+1 year'));
